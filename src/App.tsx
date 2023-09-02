@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import './App.css';
 import {Todolist} from "./Todolist";
 import {v1} from "uuid";
@@ -16,14 +16,19 @@ function App() {
     ])
 
     const [filter, setFilter] = useState<FilterValuesType>('all')
+    const newTitle = useRef<HTMLInputElement>(null)
 
     const removeTask = (id: string) => {
         setTasks(tasks.filter(t => t.id !== id))
     }
 
-    const addTask = (newTitle: string) => {
-        const newTask = {id: v1(), title: newTitle, isDone: false}
-        setTasks([newTask, ...tasks])
+    const addTask = () => {
+        if (newTitle.current) {
+            const newTask = {id: v1(), title: newTitle.current.value, isDone: false}
+            setTasks([newTask, ...tasks])
+            newTitle.current.value = ''
+        }
+
     }
 
     const changeFilter = (value: FilterValuesType) => {
@@ -62,6 +67,7 @@ function App() {
                 removeTask={removeTask}
                 addTask={addTask}
                 changeFilter={changeFilter}
+                newTitle={newTitle}
             />
         </div>
     );
