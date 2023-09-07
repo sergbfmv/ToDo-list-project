@@ -1,0 +1,17 @@
+.empty-value-error {
+    border: 1px solid red;
+}
+
+.error-text {
+    color: red;
+}
+
+.task {
+    font-weight: bold;
+}
+
+.task-done {
+    font-weight: normal;
+    opacity: 0.5;
+    text-decoration: line-through;
+}

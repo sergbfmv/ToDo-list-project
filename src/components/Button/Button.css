@@ -1,0 +1,15 @@
+.active {
+    padding: 5px;
+    margin-right: 5px;
+    background-color: rgba(217, 113, 113, 0.54);
+    border: 3px solid #985454;
+    border-radius: 3px;
+}
+
+.filterBtn {
+    padding: 5px;
+    border-radius: 3px;
+    margin-right: 5px;
+    background-color: #3a3939;
+    color: white;
+}
