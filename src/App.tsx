@@ -3,6 +3,10 @@ import './App.css';
 import {TaskType, Todolist} from "./components/Todolist/Todolist";
 import {v1} from "uuid";
 import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import {HeaderAppBar} from "./components/AppBar/AppBar";
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
 export type TodolistsType = {
@@ -119,27 +123,38 @@ function App() {
         }
 
         return (
-            <Todolist
-                key={tl.todolistId}
-                todolistId={tl.todolistId}
-                title={tl.title}
-                tasks={filteredTasks()}
-                removeTask={removeTask}
-                addTask={addTask}
-                changeFilter={changeFilter}
-                onChangeTask={onChangeTask}
-                filter={tl.filter}
-                removeTodoList={removeTodoList}
-                onChangeTaskTitle={onChangeTaskTitle}
-                onChangeTodoTitle={onChangeTodoTitle}
-            />
+            <Grid item>
+                <Paper elevation={5} style={{padding: '20px'}}>
+                    <Todolist
+                        key={tl.todolistId}
+                        todolistId={tl.todolistId}
+                        title={tl.title}
+                        tasks={filteredTasks()}
+                        removeTask={removeTask}
+                        addTask={addTask}
+                        changeFilter={changeFilter}
+                        onChangeTask={onChangeTask}
+                        filter={tl.filter}
+                        removeTodoList={removeTodoList}
+                        onChangeTaskTitle={onChangeTaskTitle}
+                        onChangeTodoTitle={onChangeTodoTitle}
+                    />
+                </Paper>
+            </Grid>
         )
     })
 
     return (
         <div className="App">
-            <AddItemForm addItem={addTodoList}/>
-            {mappedTodolists}
+            <HeaderAppBar/>
+            <Container fixed>
+                <Grid container style={{padding: '20px'}}>
+                    <AddItemForm addItem={addTodoList}/>
+                </Grid>
+                <Grid container spacing={3}>
+                    {mappedTodolists}
+                </Grid>
+            </Container>
         </div>
     );
 }

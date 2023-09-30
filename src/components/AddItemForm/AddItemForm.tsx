@@ -1,6 +1,15 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {Input} from "../Input/Input";
-import {Button} from "../Button/Button";
+// import {Button} from "../Button/Button";
+import Button from '@mui/material/Button';
+
+const addBtnStyle = {
+    maxWidth: '38px',
+    maxHeight: '38px',
+    minWidth: '38px',
+    minHeight: '38px',
+    marginLeft: '10px',
+}
 
 type AddItemFormPropsType = {
     addItem: (newTitle: string) => void
@@ -37,8 +46,8 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
                    error={error}
             />
             {/*<input onChange={onChangeHandler} value={newTitle} onKeyDown={onKeyDownHandler}/>*/}
-            <Button title={'+'} callback={addTaskHandler}/>
-            {error ? <div className='error-text'>{error}</div> : ''}
+            {/*<Button title={'+'} callback={addTaskHandler}/>*/}
+            <Button variant="contained" title={'+'} onClick={addTaskHandler} style={addBtnStyle}>+</Button>
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import React, {ChangeEvent, KeyboardEvent} from 'react';
 import './Input.css'
+import TextField from '@mui/material/TextField';
 
 type InputPropsType = {
     newTitle: string
@@ -18,11 +19,22 @@ export const Input = (props: InputPropsType) => {
     }
 
     return (
-        <input
-            className={props.error ? 'empty-value-error' : ''}
+        <TextField
+            id="outlined-basic"
+            label={props.error ? props.error : "Type anything..." }
+            size='small'
+            variant="outlined"
+            error={!!props.error}
             value={props.newTitle}
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeHandler(e)}
-            onKeyDown={onKeyDownHandler}/>
+            onKeyDown={onKeyDownHandler}
+            className={props.error ? "error" : ""}
+        />
+        // <input
+        //     className={props.error ? 'empty-value-error' : ''}
+        //     value={props.newTitle}
+        //     onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeHandler(e)}
+        //     onKeyDown={onKeyDownHandler}/>
     );
 };
 
