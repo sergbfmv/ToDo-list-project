@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import {HeaderAppBar} from "./components/AppBar/AppBar";
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
-export type TodolistsType = {
+export type TodolistType = {
     todolistId: string
     title: string
     filter: FilterValuesType
@@ -23,7 +23,7 @@ function App() {
     const todolistId1 = v1()
     const todolistId2 = v1()
 
-    const [todolists, setTodolists] = useState<TodolistsType[]>([
+    const [todolists, setTodolists] = useState<TodolistType[]>([
         {todolistId: todolistId1, title: 'What to learn', filter: 'all'},
         {todolistId: todolistId2, title: 'What to buy', filter: 'all'}
     ])
@@ -105,7 +105,7 @@ function App() {
     }
 
     const addTodoList = (newTitle: string) => {
-        const newTodoList: TodolistsType = {todolistId: v1(), title: newTitle, filter: 'all'}
+        const newTodoList: TodolistType = {todolistId: v1(), title: newTitle, filter: 'all'}
         setTodolists([newTodoList, ...todolists])
         setTasks({...tasks, [newTodoList.todolistId]: []})
     }
