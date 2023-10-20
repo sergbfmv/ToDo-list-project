@@ -5,11 +5,9 @@ import {
     removeTodolistAC,
     todolistsReducer
 } from './todolists-reducer'
-import {v1} from 'uuid'
-import {FilterValuesType, TodolistType} from '../App'
 
-import {addTaskAC, changeTaskStatusAC, changeTitleStatusAC, removeTaskAC, tasksReducer} from './tasks-reducer'
-import { TasksStateType } from '../App'
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReducer} from './tasks-reducer'
+import { TasksStateType } from '../AppWithRedux'
 
 test('correct task should be deleted from correct array', () => {
     const startState: TasksStateType = {
@@ -81,7 +79,7 @@ test('status of specified task should be changed', () => {
         ]
     }
 
-    const action = changeTaskStatusAC('2', false, 'todolistId2')
+    const action = changeTaskStatusAC('2', 'todolistId2', false)
 
     const endState = tasksReducer(startState, action)
 
@@ -103,7 +101,7 @@ test('title of specified task should be changed', () => {
         ]
     }
 
-    const action = changeTitleStatusAC('2', 'sugar', 'todolistId2')
+    const action = changeTaskTitleAC('2', 'sugar', 'todolistId2')
 
     const endState = tasksReducer(startState, action)
 
