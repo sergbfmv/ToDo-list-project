@@ -14,12 +14,14 @@ const addBtnStyle = {
 type AddItemFormPropsType = {
     addItem: (newTitle: string) => void
 }
-export const AddItemForm = (props: AddItemFormPropsType) => {
+export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
     const [error, setError] = useState<string | null>(null)
     const [newTitle, setNewTitle] = useState('')
 
     const onKeyDownHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null)
+        if (error !== null) {
+            setError(null)
+        }
         if (e.key === 'Enter') {
             addTaskHandler()
         }
@@ -50,4 +52,4 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
             <Button variant="contained" title={'+'} onClick={addTaskHandler} style={addBtnStyle}>+</Button>
         </div>
     )
-}
+})
