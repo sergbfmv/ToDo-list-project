@@ -1,21 +1,22 @@
 import React, {useCallback, useReducer, useState} from 'react';
-import './App.css';
-import {TaskType, Todolist} from "./components/Todolist/Todolist";
+import '../../App.css';
+import {TaskType, Todolist} from "../Todolist/Todolist";
 import {v1} from "uuid";
-import {AddItemForm} from "./components/AddItemForm/AddItemForm";
+import {AddItemForm} from "../AddItemForm/AddItemForm";
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import {HeaderAppBar} from "./components/AppBar/AppBar";
+import {HeaderAppBar} from "../AppBar/AppBar";
 import {
     addTodolistAC,
     changeTodolistFilterAC,
     changeTodolistTitleAC,
     removeTodolistAC,
     todolistsReducer
-} from "./state/todolists-reducer";
+} from "../../state/todolists-reducer";
 import {useDispatch, useSelector} from "react-redux";
-import {RootAppStateType} from "./state/store";
+import {RootAppStateType} from "../../state/store";
+import {useAppWithRedux} from "./hooks/useAppWithRedux";
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
 export type TodolistType = {
@@ -28,23 +29,14 @@ export type TasksStateType = {
 }
 
 function AppWithRedux() {
-    const todolists = useSelector<RootAppStateType, TodolistType[]>(state => state.todolists)
 
-    const dispatch = useDispatch()
+    const {
+        todolists,
+        removeTodoList,
+        onChangeTodoTitle,
+        addTodoList
 
-    const onChangeTodoTitle = useCallback((todolistsId: string, newValue: string) => {
-        dispatch(changeTodolistTitleAC(todolistsId, newValue))
-    }, [dispatch])
-
-    const removeTodoList = useCallback((todolistId: string) => {
-        let action = removeTodolistAC(todolistId)
-        dispatch(action)
-    }, [dispatch])
-
-    const addTodoList = useCallback((newTitle: string) => {
-        let action = addTodolistAC(newTitle)
-        dispatch(action)
-    }, [dispatch])
+    } = useAppWithRedux()
 
     const mappedTodolists = todolists.map((tl) => {
 

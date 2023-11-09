@@ -1,6 +1,6 @@
 import './Todolist.css'
 import React, {useCallback} from "react";
-import {FilterValuesType} from "../../AppWithRedux";
+import {FilterValuesType} from "../AppWithRedux/AppWithRedux";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import {EditableSpan} from "../EditableSpan/EditableSpan";
 import IconButton from '@mui/material/IconButton';
