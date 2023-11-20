@@ -1,34 +1,23 @@
-import React, {useCallback, useReducer, useState} from 'react';
+import React, {useEffect} from 'react';
 import '../../App.css';
-import {TaskType, Todolist} from "../Todolist/Todolist";
-import {v1} from "uuid";
+import {Todolist} from "../Todolist/Todolist";
 import {AddItemForm} from "../AddItemForm/AddItemForm";
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {HeaderAppBar} from "../AppBar/AppBar";
-import {
-    addTodolistAC,
-    changeTodolistFilterAC,
-    changeTodolistTitleAC,
-    removeTodolistAC,
-    todolistsReducer
-} from "../../state/todolists-reducer";
-import {useDispatch, useSelector} from "react-redux";
-import {RootAppStateType} from "../../state/store";
+import {getTodolistsTC} from "../../state/todolists-reducer";
+import {useAppDispatch} from "../../state/store";
 import {useAppWithRedux} from "./hooks/useAppWithRedux";
+import {TaskType} from "../../api/todolist-api";
 
-export type FilterValuesType = 'all' | 'active' | 'completed'
-export type TodolistType = {
-    todolistId: string
-    title: string
-    filter: FilterValuesType
-}
-export type TasksStateType = {
-    [key: string]: TaskType[]
-}
 
 function AppWithRedux() {
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        dispatch(getTodolistsTC())
+    }, []);
 
     const {
         todolists,
@@ -41,11 +30,11 @@ function AppWithRedux() {
     const mappedTodolists = todolists.map((tl) => {
 
         return (
-            <Grid item key={tl.todolistId}>
+            <Grid item key={tl.id}>
                 <Paper elevation={5} style={{padding: '20px'}}>
                     <Todolist
-                        key={tl.todolistId}
-                        todolistId={tl.todolistId}
+                        key={tl.id}
+                        todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
                         removeTodoList={removeTodoList}
@@ -69,6 +58,14 @@ function AppWithRedux() {
             </Container>
         </div>
     );
+}
+
+
+//Types
+export type FilterValuesType = 'all' | 'active' | 'completed'
+
+export type TasksStateType = {
+    [key: string]: TaskType[]
 }
 
 export default AppWithRedux;
