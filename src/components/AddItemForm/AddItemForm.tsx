@@ -11,9 +11,7 @@ const addBtnStyle = {
     marginLeft: '10px',
 }
 
-type AddItemFormPropsType = {
-    addItem: (newTitle: string) => void
-}
+
 export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
     const [error, setError] = useState<string | null>(null)
     const [newTitle, setNewTitle] = useState('')
@@ -46,10 +44,19 @@ export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
                    onChange={onChangeHandler}
                    onKeyDown={onKeyDownHandler}
                    error={error}
+                   disabled={props.disabled}
             />
             {/*<input onChange={onChangeHandler} value={newTitle} onKeyDown={onKeyDownHandler}/>*/}
             {/*<Button title={'+'} callback={addTaskHandler}/>*/}
-            <Button variant="contained" title={'+'} onClick={addTaskHandler} style={addBtnStyle}>+</Button>
+            <Button variant="contained" title={'+'} onClick={addTaskHandler} style={addBtnStyle}
+                    disabled={props.disabled}>+</Button>
         </div>
     )
 })
+
+
+//Types
+type AddItemFormPropsType = {
+    addItem: (newTitle: string) => void
+    disabled?: boolean
+}

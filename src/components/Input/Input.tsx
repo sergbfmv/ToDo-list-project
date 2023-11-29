@@ -2,13 +2,6 @@ import React, {ChangeEvent, KeyboardEvent} from 'react';
 import './Input.css'
 import TextField from '@mui/material/TextField';
 
-type InputPropsType = {
-    newTitle: string
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void
-    onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
-    error: string | null
-}
-
 export const Input = (props: InputPropsType) => {
     const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         props.onChange(e)
@@ -21,7 +14,7 @@ export const Input = (props: InputPropsType) => {
     return (
         <TextField
             id="outlined-basic"
-            label={props.error ? props.error : "Type anything..." }
+            label={props.error ? props.error : "Type anything..."}
             size='small'
             variant="outlined"
             error={!!props.error}
@@ -29,6 +22,7 @@ export const Input = (props: InputPropsType) => {
             onChange={(e: ChangeEvent<HTMLInputElement>) => onChangeHandler(e)}
             onKeyDown={onKeyDownHandler}
             className={props.error ? "error" : ""}
+            disabled={props.disabled}
         />
         // <input
         //     className={props.error ? 'empty-value-error' : ''}
@@ -38,3 +32,12 @@ export const Input = (props: InputPropsType) => {
     );
 };
 
+
+//Types
+type InputPropsType = {
+    newTitle: string
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void
+    onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void
+    error: string | null
+    disabled?: boolean
+}

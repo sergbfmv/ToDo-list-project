@@ -1,9 +1,6 @@
 import React, {ChangeEvent, useState} from 'react';
 
-type EditableSpanPropsType = {
-    title: string
-    onChange: (value: string) => void
-}
+
 export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
     const [editMode, setEditMode] = useState(false)
     const [title, setTitle] = useState('')
@@ -23,9 +20,16 @@ export const EditableSpan = React.memo((props: EditableSpanPropsType) => {
     }
 
     return (
-        editMode
+        editMode && !props.disabled
             ? <input value={title} onBlur={activateViewMode} onChange={onChangeHandler} autoFocus></input>
             : <span onDoubleClick={activateEditMode}>{props.title}</span>
     );
 })
 
+
+//Types
+type EditableSpanPropsType = {
+    title: string
+    onChange: (value: string) => void
+    disabled?: boolean
+}

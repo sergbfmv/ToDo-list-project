@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {useDispatch} from "react-redux";
 import {TaskStatuses, TaskType} from "../../api/todolist-api";
 import {useAppDispatch} from "../../state/store";
+import {RequestStatusType} from "../AppWithRedux/app-reducer";
 
 
 export const Task = React.memo((props: TaskPropsType) => {
@@ -32,14 +33,15 @@ export const Task = React.memo((props: TaskPropsType) => {
         dispatch(thunk)
     }, [props.task.id, props.todolistId]);
 
-    
+
     return (
         <li key={props.task.id} className={props.task.status ? 'task-done' : 'task'}>
             <Checkbox color="success" checked={props.task.status === TaskStatuses.Completed}
-                      onChange={onChangeHandler}/>
+                      onChange={onChangeHandler} disabled={props.entityStatus === 'loading'}/>
             {/*<input type="checkbox" checked={t.isDone} onChange={onChangeHandler}/>*/}
-            <EditableSpan title={props.task.title} onChange={onChangeTitleHandler}/>
-            <IconButton aria-label="delete" onClick={removeTaskHandler}>
+            <EditableSpan title={props.task.title} onChange={onChangeTitleHandler}
+                          disabled={props.entityStatus === 'loading'}/>
+            <IconButton aria-label="delete" onClick={removeTaskHandler} disabled={props.entityStatus === 'loading'}>
                 <DeleteIcon/>
             </IconButton>
             {/*<Button title={'x'} callback={removeTaskHandler}/>*/}
@@ -51,6 +53,7 @@ export const Task = React.memo((props: TaskPropsType) => {
 type TaskPropsType = {
     task: TaskType
     todolistId: string
+    entityStatus: RequestStatusType
     // changeTaskStatus: (todolistId: string, id: string, status: TaskStatuses) => void
     // changeTaskTitle: (todolistId: string, taskId: string, newTitle: string) => void
     // removeTask: (taskId: string, todolistId: string) => void

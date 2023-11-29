@@ -6,12 +6,11 @@ import {EditableSpan} from "../EditableSpan/EditableSpan";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
-import {useSelector} from "react-redux";
-import {RootAppStateType, useAppDispatch, useAppSelector} from "../../state/store";
+import {useAppDispatch, useAppSelector} from "../../state/store";
 import {createTaskTC, getTasksTC} from "../../state/tasks-reducer";
 import {changeTodolistFilterAC, deleteTodolistTC} from "../../state/todolists-reducer";
 import {Task} from "../Task/Task";
-import {TaskType} from "../../api/todolist-api";
+import {RequestStatusType} from "../AppWithRedux/app-reducer";
 
 
 export const Todolist = React.memo((props: TodolistPropsType) => {
@@ -54,17 +53,18 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
     return (
         <div>
             <h3>
-                <EditableSpan title={props.title} onChange={onChangeTodoTitleHandler}/>
+                <EditableSpan title={props.title} onChange={onChangeTodoTitleHandler}
+                              disabled={props.entityStatus === 'loading'}/>
                 {/*<button onClick={removeTodoList}>x</button>*/}
-                <IconButton aria-label="delete" onClick={removeTodoList}>
+                <IconButton aria-label="delete" onClick={removeTodoList} disabled={props.entityStatus === 'loading'}>
                     <DeleteIcon/>
                 </IconButton>
             </h3>
-            {<AddItemForm addItem={addTask}/>}
+            {<AddItemForm addItem={addTask} disabled={props.entityStatus === 'loading'}/>}
             <ul>
                 {filteredTasks.map(t => {
                     return (
-                        <Task key={t.id} task={t} todolistId={props.todolistId}/>
+                        <Task key={t.id} task={t} todolistId={props.todolistId} entityStatus={t.entityStatus}/>
                     )
                 })}
                 {tasks.length === 0 ? 'Not tasks in the list' : false}
@@ -101,4 +101,5 @@ type TodolistPropsType = {
     removeTodoList: (id: string) => void
     onChangeTodoTitle: (id: string, newTitle: string) => void
     filter: FilterValuesType
+    entityStatus: RequestStatusType
 }

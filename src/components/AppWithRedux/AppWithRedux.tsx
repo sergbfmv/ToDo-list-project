@@ -7,13 +7,17 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import {HeaderAppBar} from "../AppBar/AppBar";
 import {getTodolistsTC} from "../../state/todolists-reducer";
-import {useAppDispatch} from "../../state/store";
+import {useAppDispatch, useAppSelector} from "../../state/store";
 import {useAppWithRedux} from "./hooks/useAppWithRedux";
 import {TaskType} from "../../api/todolist-api";
+import {LinearLoader} from "../Loader/LinearLoader";
+import {selectAppStatus} from "./app-selectors";
+import {ErrorSnackbar} from "../ErrorSnackbar/ErrorSnackbar";
 
 
 function AppWithRedux() {
     const dispatch = useAppDispatch()
+    const status = useAppSelector(selectAppStatus)
 
     useEffect(() => {
         dispatch(getTodolistsTC())
@@ -39,6 +43,7 @@ function AppWithRedux() {
                         filter={tl.filter}
                         removeTodoList={removeTodoList}
                         onChangeTodoTitle={onChangeTodoTitle}
+                        entityStatus={tl.entityStatus}
                     />
                 </Paper>
             </Grid>
@@ -47,6 +52,8 @@ function AppWithRedux() {
 
     return (
         <div className="App">
+            <ErrorSnackbar/>
+            {status === 'loading' && <LinearLoader/>}
             <HeaderAppBar/>
             <Container fixed>
                 <Grid container style={{padding: '20px'}}>
