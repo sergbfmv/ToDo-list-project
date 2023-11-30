@@ -139,11 +139,11 @@ export const createTaskTC = (todolistId: string, title: string) => async (dispat
                 dispatch(addTaskAC(todolistId, task))
                 dispatch(setAppStatusAC('succeeded'))
             } else {
-                handleServerAppError<{ item: TaskType }>(res.data, dispatch)
+                handleServerAppError(res.data, dispatch)
             }
         })
         .catch(e => {
-            handleServerNetworkError(e.message, dispatch)
+            handleServerAppError(e, dispatch)
         })
 }
 
@@ -155,7 +155,7 @@ export const getTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
             dispatch(setAppStatusAC('succeeded'))
         })
         .catch(e => {
-            handleServerNetworkError(e.message, dispatch)
+            handleServerAppError(e, dispatch)
         })
 }
 
@@ -171,23 +171,22 @@ export const removeTaskTC = (todolistId: string, taskId: string) => async (dispa
             dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'succeeded'))
         } else {
             handleServerAppError(res.data, dispatch)
+            dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'failed'))
         }
     } catch (e) {
-        if (axios.isAxiosError<ErrorType>(e)) {
-            const error = e.response?.data ? e.response.data.messages[0] : e.message
-            handleServerNetworkError(error, dispatch)
-        } else {
-            handleServerNetworkError((e as Error).message, dispatch)
-        }
+        handleServerNetworkError(e, dispatch)
+        dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'failed'))
     }
 }
 
-export const updateTaskTC = (todolistId: string, taskId: string, domainModel: UpdateDomainTaskModelType) => (dispatch: Dispatch, getState: () => AppRootStateType) => {
+export const updateTaskTC = (todolistId: string, taskId: string, domainModel: UpdateDomainTaskModelType) => async (dispatch: Dispatch, getState: () => AppRootStateType) => {
     const state = getState()
     const task = state.tasks[todolistId].find(t => t.id === taskId)
+
     if (!task) {
         return
     }
+
     const apiModel: UpdateTaskModelType = {
         deadline: task.deadline,
         description: task.description,
@@ -199,6 +198,7 @@ export const updateTaskTC = (todolistId: string, taskId: string, domainModel: Up
     }
     dispatch(setAppStatusAC('loading'))
     dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'loading'))
+
     todolistAPI.updateTask(todolistId, taskId, apiModel)
         .then(res => {
             if (res.data.resultCode === 0) {
@@ -206,11 +206,13 @@ export const updateTaskTC = (todolistId: string, taskId: string, domainModel: Up
                 dispatch(setAppStatusAC('succeeded'))
                 dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'succeeded'))
             } else {
-                handleServerAppError<{ item: TaskType }>(res.data, dispatch)
+                handleServerAppError(res.data, dispatch)
+                dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'failed'))
             }
         })
         .catch(e => {
-            handleServerNetworkError(e.message, dispatch)
+            handleServerAppError(e, dispatch)
+            dispatch(changeTaskEntityStatusAC(todolistId, taskId, 'failed'))
         })
 }
 

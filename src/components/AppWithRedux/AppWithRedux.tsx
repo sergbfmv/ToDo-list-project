@@ -12,7 +12,7 @@ import {useAppWithRedux} from "./hooks/useAppWithRedux";
 import {TaskType} from "../../api/todolist-api";
 import {LinearLoader} from "../Loader/LinearLoader";
 import {selectAppStatus} from "./app-selectors";
-import {ErrorSnackbar} from "../ErrorSnackbar/ErrorSnackbar";
+import {GlobalError} from "../GlobalError/GlobalError";
 
 
 function AppWithRedux() {
@@ -52,7 +52,7 @@ function AppWithRedux() {
 
     return (
         <div className="App">
-            <ErrorSnackbar/>
+            <GlobalError/>
             {status === 'loading' && <LinearLoader/>}
             <HeaderAppBar/>
             <Container fixed>

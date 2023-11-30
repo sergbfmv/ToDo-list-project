@@ -20,7 +20,7 @@ export const todolistAPI = {
         return instance.post<ResponseType<{ item: TodolistsType }>>('/todo-lists', {title})
     },
     changeTodolistTitle(todolistId: string, title: string) {
-        return instance.put<ResponseType>(`/todo-lists/${todolistId}`, {title})
+        return instance.put<null, AxiosResponse<ResponseType>, { title: string }>(`/todo-lists/${todolistId}`, {title})
     },
     getTasks(todolistId: string) {
         return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`);
