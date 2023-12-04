@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import React from "react";
 
-export function HeaderAppBar() {
+export function HeaderAppBar(props: AppBarPropsType) {
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">
@@ -24,9 +24,16 @@ export function HeaderAppBar() {
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         Awesome TodoList
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {props.isLoggedIn && <Button color="inherit" onClick={props.onClickHandler}>Log Out</Button>}
                 </Toolbar>
             </AppBar>
         </Box>
     );
+}
+
+
+//Type
+type AppBarPropsType = {
+    isLoggedIn: boolean
+    onClickHandler: () => void
 }

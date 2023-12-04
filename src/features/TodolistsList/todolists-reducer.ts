@@ -1,10 +1,8 @@
-import {FilterValuesType} from "../components/AppWithRedux/AppWithRedux";
 import {Dispatch} from "redux";
-import {TaskType, todolistAPI, TodolistsType} from "../api/todolist-api";
-import {RequestStatusType, setAppErrorAC, setAppStatusAC} from "../components/AppWithRedux/app-reducer";
-import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
-import axios from "axios/index";
-import {ErrorType} from "./tasks-reducer";
+import {todolistAPI, TodolistsType} from "../../api/todolist-api";
+import {FilterValuesType} from "../../components/AppWithRedux/AppWithRedux";
+import {RequestStatusType, setAppStatusAC} from "../../components/AppWithRedux/app-reducer";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
 
 const initialState: TodolistDomainType[] = []
@@ -98,7 +96,7 @@ export const changeTodolistEntityStatusAC = (id: string, entityStatus: RequestSt
 
 
 //TC
-export const getTodolistsTC = () => (dispatch: Dispatch) => {
+export const fetchTodolistsTC = () => (dispatch: Dispatch) => {
     dispatch(setAppStatusAC('loading'))
     todolistAPI.getTodolists()
         .then((res) => {
@@ -110,7 +108,7 @@ export const getTodolistsTC = () => (dispatch: Dispatch) => {
         })
 }
 
-export const deleteTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
+export const removeTodolistTC = (todolistId: string) => (dispatch: Dispatch) => {
     dispatch(changeTodolistEntityStatusAC(todolistId, 'loading'))
     todolistAPI.deleteTodolist(todolistId)
         .then(res => {

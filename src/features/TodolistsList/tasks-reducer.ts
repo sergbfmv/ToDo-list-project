@@ -1,15 +1,14 @@
-import {TasksStateType} from "../components/AppWithRedux/AppWithRedux";
 import {
     addTodolistAC,
     removeTodolistAC,
     setTodolistsACType
 } from "./todolists-reducer";
-import {TaskPriorities, TaskStatuses, TaskType, todolistAPI, UpdateTaskModelType} from "../api/todolist-api";
 import {Dispatch} from "redux";
-import {AppRootStateType} from "./store";
-import {RequestStatusType, setAppErrorAC, setAppStatusAC} from "../components/AppWithRedux/app-reducer";
-import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
-import axios from "axios";
+import {TasksStateType} from "../../components/AppWithRedux/AppWithRedux";
+import {RequestStatusType, setAppStatusAC} from "../../components/AppWithRedux/app-reducer";
+import {TaskPriorities, TaskStatuses, TaskType, todolistAPI, UpdateTaskModelType} from "../../api/todolist-api";
+import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
+import {AppRootStateType} from "../../state/store";
 
 
 const initialState: TasksStateType = {}
@@ -130,7 +129,7 @@ export const getTasksAC = (todolistId: string, task: TaskType[]) => {
 
 
 //TC
-export const createTaskTC = (todolistId: string, title: string) => async (dispatch: Dispatch) => {
+export const addTaskTC = (todolistId: string, title: string) => async (dispatch: Dispatch) => {
     dispatch(setAppStatusAC('loading'))
     todolistAPI.createTask(todolistId, title)
         .then(res => {

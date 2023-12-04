@@ -9,6 +9,19 @@ const instance = axios.create({
     }
 })
 
+export const authAPI = {
+    login(params: LoginParamsType) {
+        return instance.post<ResponseType<{ userId: string }>>('auth/login', params)
+    },
+    logout() {
+        return instance.delete<ResponseType>('auth/login')
+    },
+    me() {
+        return instance.get('auth/me')
+    }
+}
+
+
 export const todolistAPI = {
     getTodolists() {
         return instance.get<TodolistsType[]>('todo-lists');
@@ -96,4 +109,11 @@ export type UpdateTaskModelType = {
     priority: TaskPriorities
     startDate: string
     deadline: string
+}
+
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
 }

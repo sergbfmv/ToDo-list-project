@@ -1,67 +1,52 @@
 import React, {useEffect} from 'react';
 import '../../App.css';
-import {Todolist} from "../Todolist/Todolist";
-import {AddItemForm} from "../AddItemForm/AddItemForm";
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import {HeaderAppBar} from "../AppBar/AppBar";
-import {getTodolistsTC} from "../../state/todolists-reducer";
 import {useAppDispatch, useAppSelector} from "../../state/store";
-import {useAppWithRedux} from "./hooks/useAppWithRedux";
 import {TaskType} from "../../api/todolist-api";
 import {LinearLoader} from "../Loader/LinearLoader";
-import {selectAppStatus} from "./app-selectors";
+import {selectAppIsLoggedIn, selectAppStatus, selectIsInitialized} from "./app-selectors";
 import {GlobalError} from "../GlobalError/GlobalError";
+import {Navigate, Route, Routes} from "react-router-dom";
+import {TodolistsList} from "../../features/TodolistsList/TodolistsList";
+import {Login} from "../../features/Login/Login";
+import {logoutTC, meTC} from "../../features/Login/auth-reducers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 function AppWithRedux() {
     const dispatch = useAppDispatch()
     const status = useAppSelector(selectAppStatus)
+    const isInitialized = useAppSelector(selectIsInitialized)
+    const isLoggedIn = useAppSelector(selectAppIsLoggedIn)
 
     useEffect(() => {
-        dispatch(getTodolistsTC())
+        dispatch(meTC())
     }, []);
 
-    const {
-        todolists,
-        removeTodoList,
-        onChangeTodoTitle,
-        addTodoList
+    if (!isInitialized) {
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
 
-    } = useAppWithRedux()
-
-    const mappedTodolists = todolists.map((tl) => {
-
-        return (
-            <Grid item key={tl.id}>
-                <Paper elevation={5} style={{padding: '20px'}}>
-                    <Todolist
-                        key={tl.id}
-                        todolistId={tl.id}
-                        title={tl.title}
-                        filter={tl.filter}
-                        removeTodoList={removeTodoList}
-                        onChangeTodoTitle={onChangeTodoTitle}
-                        entityStatus={tl.entityStatus}
-                    />
-                </Paper>
-            </Grid>
-        )
-    })
+    const onClickHandler = () => {
+        dispatch(logoutTC())
+    }
 
     return (
         <div className="App">
             <GlobalError/>
             {status === 'loading' && <LinearLoader/>}
-            <HeaderAppBar/>
+            <HeaderAppBar isLoggedIn={isLoggedIn} onClickHandler={onClickHandler}/>
             <Container fixed>
-                <Grid container style={{padding: '20px'}}>
-                    <AddItemForm addItem={addTodoList}/>
-                </Grid>
-                <Grid container spacing={3}>
-                    {mappedTodolists}
-                </Grid>
+                <Routes>
+                    <Route path={'/'} element={<TodolistsList/>}/>
+                    <Route path={'/login'} element={<Login/>}/>
+                    <Route path={'/404'} element={<h1>404: PAGE NOT FOUND</h1>}/>
+                    <Route path={'*'} element={<Navigate to={'/404'}/>}/>
+                </Routes>
             </Container>
         </div>
     );
