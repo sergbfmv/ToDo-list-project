@@ -1,26 +1,28 @@
-import {AnyAction, applyMiddleware, combineReducers, createStore} from "redux";
-import thunk, {ThunkDispatch} from "redux-thunk";
-import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
-import {appReducer} from "../components/AppWithRedux/app-reducer";
-import {todolistsReducer} from "../features/TodolistsList/todolists-reducer";
-import {tasksReducer} from "../features/TodolistsList/tasks-reducer";
-import {authReducer} from "../features/Login/auth-reducers";
+import { AnyAction, combineReducers } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import { appReducer } from "app/app-reducer";
+import { todolistsReducer } from "features/TodolistsList/todolists-reducer";
+import { tasksReducer } from "features/TodolistsList/tasks-reducer";
+import { authReducer } from "features/Login/auth-reducers";
+import { configureStore } from "@reduxjs/toolkit";
 
 const rootReducer = combineReducers({
-        todolists: todolistsReducer,
-        tasks: tasksReducer,
-        app: appReducer,
-        auth: authReducer,
-    }
-)
+  todolists: todolistsReducer,
+  tasks: tasksReducer,
+  app: appReducer,
+  auth: authReducer,
+});
 
-export const store = createStore(rootReducer, applyMiddleware(thunk))
+export const store = configureStore({
+  reducer: rootReducer,
+});
 
-export type AppRootStateType = ReturnType<typeof rootReducer>
+export type AppRootStateType = ReturnType<typeof rootReducer>;
 
-export type AppDispatchType = ThunkDispatch<AppRootStateType, unknown, AnyAction>
-export const useAppDispatch = useDispatch<AppDispatchType>
-export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
+export type AppDispatchType = ThunkDispatch<AppRootStateType, unknown, AnyAction>;
+export const useAppDispatch = useDispatch<AppDispatchType>;
+export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector;
 
 // а это, чтобы можно было в консоли браузера обращаться к store в любой момент
 // @ts-ignore
