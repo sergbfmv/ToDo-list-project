@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent, useState } from "react";
-import { Input } from "../Input/Input";
+import { Input } from "common/components/Input/Input";
 import Button from "@mui/material/Button";
 
 const addBtnStyle = {

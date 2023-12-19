@@ -1,10 +1,10 @@
 import { Dispatch } from "redux";
-import { todolistAPI, TodolistsType } from "api/todolist-api";
+import { todolistAPI, TodolistsType } from "features/TodolistsList/api/todolist-api";
 import { FilterValuesType } from "app/AppWithRedux";
 import { appActions, RequestStatusType } from "app/app-reducer";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getTasksTC } from "features/TodolistsList/tasks-reducer";
+import { tasksThunks } from "features/TodolistsList/tasks-reducer";
+import { handleServerAppError, handleServerNetworkError } from "common/utils";
 
 const initialState: TodolistDomainType[] = [];
 
@@ -58,7 +58,7 @@ export const fetchTodolistsTC = () => (dispatch: any) => {
     })
     .then((todos) => {
       todos.forEach((tl) => {
-        dispatch(getTasksTC(tl.id));
+        dispatch(tasksThunks.fetchTasks(tl.id));
       });
     })
     .catch((e) => {

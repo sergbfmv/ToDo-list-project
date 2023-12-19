@@ -1,17 +1,18 @@
 import React, { useEffect } from "react";
 import "app/App.css";
 import Container from "@mui/material/Container";
-import { HeaderAppBar } from "components/AppBar/AppBar";
-import { useAppDispatch, useAppSelector } from "state/store";
-import { TaskType } from "api/todolist-api";
-import { LinearLoader } from "components/Loader/LinearLoader";
+import { HeaderAppBar } from "common/components/AppBar/AppBar";
+import { useAppSelector } from "app/store";
+import { TaskType } from "features/TodolistsList/api/todolist-api";
+import { LinearLoader } from "common/components/Loader/LinearLoader";
 import { selectAppIsLoggedIn, selectAppStatus, selectIsInitialized } from "app/app-selectors";
-import { GlobalError } from "components/GlobalError/GlobalError";
+import { GlobalError } from "common/components/GlobalError/GlobalError";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { TodolistsList } from "features/TodolistsList/TodolistsList";
-import { Login } from "features/Login/Login";
-import { logoutTC, meTC } from "features/Login/auth-reducers";
+import { Login } from "features/auth/Login";
+import { logoutTC, meTC } from "features/auth/model/auth-reducers";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useAppDispatch } from "common/hooks/useAppDispatch";
 
 function AppWithRedux() {
   const dispatch = useAppDispatch();

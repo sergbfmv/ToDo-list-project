@@ -1,25 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { RequestStatusType } from "app/app-reducer";
-
-const instance = axios.create({
-  baseURL: "https://social-network.samuraijs.com/api/1.1/",
-  withCredentials: true,
-  headers: {
-    "API-KEY": "ea044914-fa83-4538-816d-71cacce93c91",
-  },
-});
-
-export const authAPI = {
-  login(params: LoginParamsType) {
-    return instance.post<ResponseType<{ userId: string }>>("auth/login", params);
-  },
-  logout() {
-    return instance.delete<ResponseType>("auth/login");
-  },
-  me() {
-    return instance.get("auth/me");
-  },
-};
+import { UpdateDomainTaskModelType } from "features/TodolistsList/tasks-reducer";
+import { instance } from "common/api";
+import { ResponseType } from "common/types";
 
 export const todolistAPI = {
   getTodolists() {
@@ -62,12 +45,8 @@ export const todolistAPI = {
   },
 };
 
-export type ResponseType<D = {}> = {
-  resultCode: number;
-  messages: Array<string>;
-  fieldsErrors: Array<string>;
-  data: D;
-};
+export type CreateTaskArgs = { todolistId: string; title: string };
+export type UpdateTaskArgs = { taskId: string; domainModel: UpdateDomainTaskModelType; todolistId: string };
 
 export type TodolistsType = {
   id: string;
@@ -118,11 +97,4 @@ export type UpdateTaskModelType = {
   priority: TaskPriorities;
   startDate: string;
   deadline: string;
-};
-
-export type LoginParamsType = {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-  captcha?: string;
 };

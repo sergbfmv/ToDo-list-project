@@ -1,9 +1,10 @@
 import { Dispatch } from "redux";
-import { authAPI, LoginParamsType } from "api/todolist-api";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { appActions } from "app/app-reducer";
 import { todolistsActions } from "features/TodolistsList/todolists-reducer";
+import { LoginParamsType } from "features/auth/api/auth-api.types";
+import { authAPI } from "features/auth/api/auth-api";
+import { handleServerAppError, handleServerNetworkError } from "common/utils";
 
 const initialState = {
   isLoggedIn: false,

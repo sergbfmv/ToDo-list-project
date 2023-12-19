@@ -8,9 +8,10 @@ import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import { useAppDispatch, useAppSelector } from "state/store";
-import { loginTC } from "./auth-reducers";
+import { useAppSelector } from "app/store";
+import { loginTC } from "features/auth/model/auth-reducers";
 import { Navigate } from "react-router-dom";
+import { useAppDispatch } from "common/hooks/useAppDispatch";
 
 export const Login = () => {
   const dispatch = useAppDispatch();

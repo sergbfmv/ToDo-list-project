@@ -1,5 +1,5 @@
 import React, { ChangeEvent, KeyboardEvent } from "react";
-import "./Input.css";
+import "common/components/Input/Input.css";
 import TextField from "@mui/material/TextField";
 
 export const Input = (props: InputPropsType) => {
