@@ -1,5 +1,10 @@
 import { TasksStateType } from "app/AppWithRedux";
-import { TodolistDomainType, todolistsActions, todolistsReducer } from "features/TodolistsList/todolists-reducer";
+import {
+  TodolistDomainType,
+  todolistsActions,
+  todolistsReducer,
+  todolistsThunks,
+} from "features/TodolistsList/todolists-reducer";
 import { TodolistsType } from "features/TodolistsList/api/todolist-api";
 import { tasksReducer } from "features/TodolistsList/tasks-reducer";
 
@@ -14,7 +19,7 @@ test("ids should be equals", () => {
     order: 0,
   };
 
-  const action = todolistsActions.addTodolistAC({ todolist });
+  const action = todolistsThunks.addTodolist.fulfilled({ todolist }, "requestId", { title: "new todolist" });
 
   const endTasksState = tasksReducer(startTasksState, action);
   const endTodolistsState = todolistsReducer(startTodolistsState, action);

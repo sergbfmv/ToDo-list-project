@@ -1,22 +1,15 @@
 import React, { useCallback, useEffect } from "react";
-import {
-  addTodolistTC,
-  changeTodolistTitleTC,
-  fetchTodolistsTC,
-  removeTodolistTC,
-  TodolistDomainType,
-  todolistsActions,
-} from "./todolists-reducer";
-import { removeTaskTC, tasksThunks } from "./tasks-reducer";
+import { TodolistDomainType, todolistsActions, todolistsThunks } from "./todolists-reducer";
+import { tasksThunks } from "./tasks-reducer";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import { AddItemForm } from "common/components/AddItemForm/AddItemForm";
 import { Todolist } from "./Todolist/Todolist";
 import { Navigate } from "react-router-dom";
 import { useAppSelector } from "app/store";
-import { TaskStatuses } from "features/TodolistsList/api/todolist-api";
 import { FilterValuesType, TasksStateType } from "app/AppWithRedux";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
+import { TaskStatuses } from "common/enums";
 
 export const TodolistsList: React.FC = () => {
   const todolists = useAppSelector<Array<TodolistDomainType>>((state) => state.todolists);
@@ -28,11 +21,11 @@ export const TodolistsList: React.FC = () => {
     if (!isLoggedIn) {
       return;
     }
-    dispatch(fetchTodolistsTC());
+    dispatch(todolistsThunks.fetchTodolists());
   }, []);
 
-  const removeTask = useCallback(function (id: string, todolistId: string) {
-    const thunk = removeTaskTC(todolistId, id);
+  const removeTask = useCallback(function (taskId: string, todolistId: string) {
+    const thunk = tasksThunks.removeTask({ todolistId, taskId });
     dispatch(thunk);
   }, []);
 
@@ -56,19 +49,19 @@ export const TodolistsList: React.FC = () => {
     dispatch(action);
   }, []);
 
-  const removeTodolist = useCallback(function (id: string) {
-    const thunk = removeTodolistTC(id);
+  const removeTodolist = useCallback(function (todolistId: string) {
+    const thunk = todolistsThunks.removeTodolist({ todolistId });
     dispatch(thunk);
   }, []);
 
-  const changeTodolistTitle = useCallback(function (id: string, title: string) {
-    const thunk = changeTodolistTitleTC(id, title);
+  const changeTodolistTitle = useCallback(function (todolistId: string, title: string) {
+    const thunk = todolistsThunks.changeTodolistTitle({ todolistId, title });
     dispatch(thunk);
   }, []);
 
   const addTodolist = useCallback(
     (title: string) => {
-      const thunk = addTodolistTC(title);
+      const thunk = todolistsThunks.addTodolist({ title });
       dispatch(thunk);
     },
     [dispatch],

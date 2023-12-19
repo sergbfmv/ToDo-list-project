@@ -1,19 +1,18 @@
-import { Dispatch } from "redux";
 import { TasksStateType } from "app/AppWithRedux";
 import { appActions, RequestStatusType } from "app/app-reducer";
 import {
   CreateTaskArgs,
-  TaskPriorities,
-  TaskStatuses,
+  RemoveTaskArgs,
   TaskType,
   todolistAPI,
   UpdateTaskArgs,
   UpdateTaskModelType,
 } from "features/TodolistsList/api/todolist-api";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { todolistsActions } from "features/TodolistsList/todolists-reducer";
+import { todolistsActions, todolistsThunks } from "features/TodolistsList/todolists-reducer";
 import { createAppAsyncThunk } from "common/utils/create-app-async-thunk";
 import { handleServerAppError, handleServerNetworkError } from "common/utils";
+import { TaskPriorities, TaskStatuses, ResultCode } from "common/enums";
 
 const initialState: TasksStateType = {};
 
@@ -32,13 +31,6 @@ const slice = createSlice({
       const todo = state[action.payload.todolistId].find((todo) => todo.id === action.payload.id);
       if (todo) todo.entityStatus = action.payload.status;
     },
-    removeTaskAC: (state, action: PayloadAction<{ taskId: string; todolistId: string }>) => {
-      const tasksFotTodolist = state[action.payload.todolistId];
-      const index = tasksFotTodolist.findIndex((task) => task.id === action.payload.taskId);
-      if (index !== -1) {
-        tasksFotTodolist.splice(index, 1);
-      }
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -56,13 +48,20 @@ const slice = createSlice({
           tasks[index] = { ...tasks[index], ...action.payload.domainModel };
         }
       })
-      .addCase(todolistsActions.addTodolistAC, (state, action) => {
+      .addCase(removeTask.fulfilled, (state, action) => {
+        const tasksFotTodolist = state[action.payload.todolistId];
+        const index = tasksFotTodolist.findIndex((task) => task.id === action.payload.taskId);
+        if (index !== -1) {
+          tasksFotTodolist.splice(index, 1);
+        }
+      })
+      .addCase(todolistsThunks.addTodolist.fulfilled, (state, action) => {
         state[action.payload.todolist.id] = [];
       })
-      .addCase(todolistsActions.removeTodolistAC, (state, action) => {
+      .addCase(todolistsThunks.removeTodolist.fulfilled, (state, action) => {
         delete state[action.payload.todolistId];
       })
-      .addCase(todolistsActions.setTodolistsAC, (state, action) => {
+      .addCase(todolistsThunks.fetchTodolists.fulfilled, (state, action) => {
         action.payload.todos.forEach((t) => {
           state[t.id] = [];
         });
@@ -101,7 +100,7 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, CreateTaskArgs>(
       dispatch(appActions.setAppStatusAC({ status: "loading" }));
       const res = await todolistAPI.createTask(arg.todolistId, arg.title);
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         const task = res.data.data.item;
         dispatch(appActions.setAppStatusAC({ status: "succeeded" }));
         return { task: task };
@@ -116,31 +115,45 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, CreateTaskArgs>(
   },
 );
 
-export const removeTaskTC = (todolistId: string, taskId: string) => async (dispatch: Dispatch) => {
-  dispatch(appActions.setAppStatusAC({ status: "loading" }));
-  dispatch(tasksActions.changeTaskEntityStatusAC({ todolistId: todolistId, id: taskId, status: "loading" }));
-  try {
-    const res = await todolistAPI.deleteTask(todolistId, taskId);
+const removeTask = createAppAsyncThunk<RemoveTaskArgs, RemoveTaskArgs>(
+  `${slice.name}/removeTask`,
+  async (arg, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
 
-    if (res.data.resultCode === 0) {
-      dispatch(tasksActions.removeTaskAC({ todolistId: todolistId, taskId: taskId }));
-      dispatch(appActions.setAppStatusAC({ status: "succeeded" }));
-      dispatch(
-        tasksActions.changeTaskEntityStatusAC({
-          todolistId: todolistId,
-          id: taskId,
-          status: "succeeded",
-        }),
-      );
-    } else {
-      handleServerAppError(res.data, dispatch);
-      dispatch(tasksActions.changeTaskEntityStatusAC({ todolistId: todolistId, id: taskId, status: "failed" }));
+    dispatch(appActions.setAppStatusAC({ status: "loading" }));
+    dispatch(tasksActions.changeTaskEntityStatusAC({ todolistId: arg.todolistId, id: arg.taskId, status: "loading" }));
+
+    try {
+      const res = await todolistAPI.deleteTask(arg.todolistId, arg.taskId);
+
+      if (res.data.resultCode === ResultCode.success) {
+        dispatch(appActions.setAppStatusAC({ status: "succeeded" }));
+        dispatch(
+          tasksActions.changeTaskEntityStatusAC({
+            todolistId: arg.todolistId,
+            id: arg.taskId,
+            status: "succeeded",
+          }),
+        );
+        return { todolistId: arg.todolistId, taskId: arg.taskId };
+      } else {
+        handleServerAppError(res.data, dispatch);
+        dispatch(
+          tasksActions.changeTaskEntityStatusAC({
+            todolistId: arg.todolistId,
+            id: arg.taskId,
+            status: "failed",
+          }),
+        );
+        return rejectWithValue(null);
+      }
+    } catch (e) {
+      handleServerNetworkError(e, dispatch);
+      dispatch(tasksActions.changeTaskEntityStatusAC({ todolistId: arg.todolistId, id: arg.taskId, status: "failed" }));
+      return rejectWithValue(null);
     }
-  } catch (e) {
-    handleServerNetworkError(e, dispatch);
-    dispatch(tasksActions.changeTaskEntityStatusAC({ todolistId: todolistId, id: taskId, status: "failed" }));
-  }
-};
+  },
+);
 
 const updateTask = createAppAsyncThunk<UpdateTaskArgs, UpdateTaskArgs>(
   `${slice.name}/updateTask`,
@@ -176,7 +189,7 @@ const updateTask = createAppAsyncThunk<UpdateTaskArgs, UpdateTaskArgs>(
 
       const res = await todolistAPI.updateTask(arg.todolistId, arg.taskId, apiModel);
 
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCode.success) {
         dispatch(appActions.setAppStatusAC({ status: "succeeded" }));
         dispatch(
           tasksActions.changeTaskEntityStatusAC({
@@ -218,4 +231,4 @@ export type UpdateDomainTaskModelType = {
 
 export const tasksActions = slice.actions;
 export const tasksReducer = slice.reducer;
-export const tasksThunks = { fetchTasks, addTask, updateTask };
+export const tasksThunks = { fetchTasks, addTask, updateTask, removeTask };

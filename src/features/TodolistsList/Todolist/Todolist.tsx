@@ -6,8 +6,9 @@ import Button from "@mui/material/Button";
 import { Delete } from "@mui/icons-material";
 import { Task } from "./Task/Task";
 import { TodolistDomainType } from "../todolists-reducer";
-import { TaskStatuses, TaskType } from "features/TodolistsList/api/todolist-api";
+import { TaskType } from "features/TodolistsList/api/todolist-api";
 import { FilterValuesType } from "app/AppWithRedux";
+import { TaskStatuses } from "common/enums";
 
 type PropsType = {
   todolist: TodolistDomainType;

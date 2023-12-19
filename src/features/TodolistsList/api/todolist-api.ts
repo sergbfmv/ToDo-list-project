@@ -3,6 +3,7 @@ import { RequestStatusType } from "app/app-reducer";
 import { UpdateDomainTaskModelType } from "features/TodolistsList/tasks-reducer";
 import { instance } from "common/api";
 import { ResponseType } from "common/types";
+import { TaskPriorities, TaskStatuses } from "common/enums";
 
 export const todolistAPI = {
   getTodolists() {
@@ -46,7 +47,9 @@ export const todolistAPI = {
 };
 
 export type CreateTaskArgs = { todolistId: string; title: string };
+export type RemoveTaskArgs = { todolistId: string; taskId: string };
 export type UpdateTaskArgs = { taskId: string; domainModel: UpdateDomainTaskModelType; todolistId: string };
+export type UpdateTodoArgs = { todolistId: string; title: string };
 
 export type TodolistsType = {
   id: string;
@@ -68,21 +71,6 @@ export type TaskType = {
   addedDate: string;
   entityStatus: RequestStatusType;
 };
-
-export enum TaskStatuses {
-  New = 0,
-  InProgress = 1,
-  Completed = 2,
-  Draft = 3,
-}
-
-export enum TaskPriorities {
-  Low = 0,
-  Middle = 1,
-  Hi = 2,
-  Urgently = 3,
-  Later = 4,
-}
 
 type GetTasksResponse = {
   error: string | null;
