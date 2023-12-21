@@ -1,4 +1,3 @@
-import { Dispatch } from "redux";
 import { todolistAPI, TodolistsType, UpdateTodoArgs } from "features/TodolistsList/api/todolist-api";
 import { FilterValuesType } from "app/AppWithRedux";
 import { appActions, RequestStatusType } from "app/app-reducer";
