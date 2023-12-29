@@ -6,6 +6,7 @@ import { LoginParamsType } from "features/auth/api/auth-api.types";
 import { authAPI } from "features/auth/api/auth-api";
 import { createAppAsyncThunk, handleServerAppError, handleServerNetworkError } from "common/utils";
 import { ResultCode } from "common/enums";
+import { thunkTryCatch } from "../../../common/utils/thunkTryCatch";
 
 const initialState = {
   isLoggedIn: false,
@@ -89,24 +90,19 @@ const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
     const { dispatch, rejectWithValue } = thunkAPI;
     dispatch(appActions.setAppStatusAC({ status: "loading" }));
 
-    try {
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await authAPI.me();
-      if (res.data.resultCode === 0) {
-        dispatch(appActions.setAppStatusAC({ status: "succeeded" }));
+      if (res.data.resultCode === ResultCode.success) {
         return { isLoggedIn: true };
       } else {
-        handleServerAppError(res.data, dispatch);
-        dispatch(appActions.setAppStatusAC({ status: "failed" }));
         return rejectWithValue(null);
       }
-    } catch (e) {
-      handleServerNetworkError(e, dispatch);
-      return rejectWithValue(null);
-    } finally {
+    }).finally(() => {
       dispatch(appActions.setIsInitializedAC({ isInitialized: true }));
-    }
-  },
-);
+    })
+  })
+
+
 
 export const authActions = slice.actions;
 export const authReducer = slice.reducer;
