@@ -1,1 +1,1 @@
-export * from "./responseType";
+export * from "common/types/baseResponseType";

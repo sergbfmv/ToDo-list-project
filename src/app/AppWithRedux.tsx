@@ -10,9 +10,9 @@ import { GlobalError } from "common/components/GlobalError/GlobalError";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { TodolistsList } from "features/TodolistsList/TodolistsList";
 import { Login } from "features/auth/Login";
-import { logoutTC, meTC } from "features/auth/model/auth-reducers";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
+import { authThunks } from "features/auth/model/auth-reducers";
 
 function AppWithRedux() {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ function AppWithRedux() {
   const isLoggedIn = useAppSelector(selectAppIsLoggedIn);
 
   useEffect(() => {
-    dispatch(meTC());
+    dispatch(authThunks.initializeApp());
   }, []);
 
   if (!isInitialized) {
@@ -33,7 +33,7 @@ function AppWithRedux() {
   }
 
   const onClickHandler = () => {
-    dispatch(logoutTC());
+    dispatch(authThunks.logout());
   };
 
   return (

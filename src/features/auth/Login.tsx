@@ -9,9 +9,10 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { useAppSelector } from "app/store";
-import { loginTC } from "features/auth/model/auth-reducers";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch } from "common/hooks/useAppDispatch";
+import { authThunks } from "features/auth/model/auth-reducers";
+import { BaseResponseType } from "common/types";
 
 export const Login = () => {
   const dispatch = useAppDispatch();
@@ -39,10 +40,16 @@ export const Login = () => {
 
       return errors;
     },
-    onSubmit: (values) => {
+    onSubmit: (values, formikHelpers) => {
       // alert(JSON.stringify(values, null, 2));
-      dispatch(loginTC(values));
-      formik.resetForm();
+      dispatch(authThunks.login(values))
+        .unwrap()
+        .then()
+        .catch((e: BaseResponseType) => {
+          e.fieldsErrors?.forEach((fieldError) => {
+            return formikHelpers.setFieldError(fieldError.field, fieldError.error);
+          });
+        });
     },
   });
 
